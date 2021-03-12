@@ -1,0 +1,74 @@
+---
+title: "Activity: Graphical Exploration"
+author: "Jingyu Wang"
+date: "Due Date:Feb 15 2021 "
+output: html_notebook
+---
+
+
+
+## Graphical Exploration
+
+Install supporting R packages with necessary functions and data sets.  You will need to add `library(DataComputing)` to the code chunk.  Note the line `rm(list = ls())` at the beginning of the code chunk, this will effectively reset your R environment which can help avoid bugs when an analysis gets more complicated.  
+
+
+```{r} 
+rm(list = ls())      # cleans up your R environment
+
+# load packages
+library(mosaic)
+library(tidyverse)  # loads a group of useful packages including `ggplot2`
+library(esquisse)
+
+
+```
+
+
+
+### Explore the `diamonds` data
+
+*Task: Use R to produce one informative graphic of the `diamonds` data.  The graphic should represent AT LEAST 3 variables.  Write a few sentences to describe what we can learn from the graphic your have provided.  (Note: please do NOT write your narrative inside the code chunk.)*
+
+
+```{r}
+# read `diamonds` data into R; it has been provided by the `ggplot2` package
+data("diamonds", package = "ggplot2")
+
+# add your code below for your one key data visualization
+ggplot(diamonds) +
+ aes(x = carat, y = price, colour = color, size = cut) +
+ geom_point() +
+ scale_color_hue() +
+ theme_minimal()
+
+```
+I use carat, price, and cut variables to make my diamond's graphic. I found that the larger the carat of the diamond, the higher the price of the diamond.But there is no direct relationship between the quality of the cut and the price. There are ideal cuts but the price is very low, and there are also fair cuts but the prices are high.From this chart, we can conclude that price and carat are directly related, and most diamond carats are between 0-3 carats.
+
+
+### Explore the cereal data
+
+*Task: Use R to produce one informative graphic of the `cereal.csv` data.  The graphic should represent AT LEAST 3 variables.  Write a few sentences to describe what we can learn from the graphic your have provided. (Note: please do NOT write your narrative inside the code chunk.)*
+
+
+```{r}
+# read CSV data set into R
+CerealData <- read.csv(file = "cereal.csv")  
+
+# add your code below for your one key data visualization
+ggplot(CerealData) +
+ aes(x = type, y = sugars, fill = mfr, colour = type) +
+ geom_boxplot() +
+ scale_fill_hue() +
+ scale_color_hue() +
+ theme_bw() +
+ facet_wrap(vars(type))
+```
+
+I use sugars, type, and mfr these three variables to make the garph.From my graph, I found that most of the manufacturers make cold cereal, and almost no one makes hot cereal.I also found that Kellogs(K) and Post(P)'s cereals have the most sugar in it. Among the manufacturers, K and G produce the most cereals, and they both account for the largest proportion.
+
+
+
+### Extension: programming style
+
+The helper functions are great, but they produce ugly code.  Clean up the `ggplot2` code that reproduces the required plots so that it aligns with the R Programming Style Guide Appendix in the *DataComputing* eBook <https://dtkaplan.github.io/DataComputingEbook/>.  
+

@@ -1,0 +1,118 @@
+---
+title: "Activity: Popular Names"
+author: "Jingyu Wang"
+date: "03.01.2020"
+output: html_notebook
+---
+
+
+
+# Set Up
+
+```{r}
+# clean up
+rm(list = ls())
+
+# packages in use
+library(tidyverse)
+library(dcData)
+library(esquisse)
+```
+
+
+```{r}
+# data intake 
+data("BabyNames", package = "dcData")
+
+```
+
+# Activity
+
+**Goal**: By the end of the activity, each team will create a graph similar to the Figure in the book showing ups and downs in the popularity of four names (your own & at least three additional names) according to the U.S. social security administration provided in the `dcData` pacakge 
+
+
+### Step 1
+```{r}
+view(data)
+help("BabyNames")
+```
+
+
+By viewing the dataset, I found "BabyNames" dataset contains four variables, which are name, sex, count, and year. Also this dataset contains 1792091 cases, which are very large number, because this is a raw data. 
+
+### Step 3
+1. What variable(s) from the raw data table do not appear at all in the graph?
+  + I found that count variable does not appear at all in the graph.
+
+2. What variable(s) in the graph are similar to corresponding variables in the raw data table, but might have been transformed in some way?
+  + From my perspective, the popularity variable in the graph are similar to count variable in the raw data, popularity is a transformation and calculartion from count.
+
+
+### Step 4
+1. Have cases been filtered out?
+  + Yes the cases have been filtered out.
+  
+2. Have cases been grouped and summarized within groups in any way?
+  + Yes the cases been grouped and summarized within groups, I grouped name and year, then summarized by the total. I also 
+
+3. Have any new variables been introduced? If so, what’s the relationship between the new variables and existing variables?
+  + I create a new variable called pop, which means the "popularity" of the name, I took log10 of the count to create this new variable.
+
+
+### Step 5
+
+First I discovering the whole dataset, I found there has four columns in the dataset.Then I group the data and summarise by sex and name to see the total number of the name. Then I use filter function to see the most popular girl names after 1996. After that I use head function to see the top 10 name of the dataset. The I use mutate function to create a new variable called pop, which means the popularity, it is log10 of the variable count. Then I try some steps with the pop variable. First I try the name "Emily" to see this name's popularity acrossing each years, the I use filter and arrange function to see the popularity of girl's names and boy's names.
+
+### Step 7
+
+```{r}
+Result <- 
+  BabyNames %>% 
+  group_by( name, year ) %>%
+  summarise( total = sum( count ) )
+Result
+```
+
+
+```{r}
+BabyNames %>% 
+  filter(year > 1995, sex == "F")
+```
+
+```{r}
+head(BabyNames, n = 10)
+```
+
+```{r}
+BabyNames <-
+  BabyNames %>% 
+  mutate(popularity = log10(count))
+```
+
+```{r}
+BabyNames %>%
+  filter(name == "Emily" & sex == "F") %>%
+  arrange(desc(popularity))
+```
+
+```{r}
+BabyNames %>%
+  filter(sex == "F") %>%
+  arrange(desc(popularity))
+```
+
+```{r}
+BabyNames %>%
+  filter(sex == "M") %>%
+  arrange(desc(popularity))
+```
+
+```{r}
+BabyNames %>%
+  filter(sex=="F") %>%
+  filter(name %in% c("Emily","Erica","Anna","Jingyu")) %>% 
+  ggplot(., aes(year, popularity)) +
+  geom_line(aes(color=name), lwd=1) +
+  theme_bw()
+
+```

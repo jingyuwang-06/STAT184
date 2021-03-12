@@ -1,0 +1,188 @@
+
+---
+title: "STAT 184 Homework Exercises" 
+subtitle: "DataComputing Chapters 5 & 6"
+author: "Jingyu Wang"
+output: html_notebook
+---
+
+## Assigned Exercises
+
+- DC Chapter 5 Exercises: 5.1, 5.2, 5.3  
+- DC Chapter 6 Exercises: 6.1, 6.2, 6.3, 6.4, 6.5, 6.6, 6.7, 6.8, 6.9, 6.10
+
+## Front Matter
+
+```{r}
+# clean up workspace environment
+rm(list = ls())
+
+# all packages used for the assignment
+library(mosaicData)
+library(tidyverse)
+library(esquisse)
+library(ggplot2)
+library(mosaic)
+library(dcData)
+library(manipulate)
+```
+
+
+
+## Chapter 5 Exercises
+
+### Problem 5.1
+
+```{r}
+data("CPS85", package = "mosaicData")
+library(ggplot2)
+
+ggplot(CPS85) +
+ aes(x = sex, y = wage, fill = married) +
+ geom_boxplot() +
+ scale_fill_hue() +
+ theme_bw() +
+ facet_wrap(vars(race))
+```
+ 
+### Problem 5.2
+
+```{r}
+library(dcData)
+library(mosaic)
+library(manipulate)
+manipulate(mplot(NCHS))
+ggplot(data = NCHS, aes(x = bmi)) + 
+  geom_density(adjust = 1) + 
+  aes(colour = sex) + 
+  facet_wrap(~pregnant, ncol = 4) + 
+  labs(title = "") + 
+  theme(legend.position = "right")
+```
+
+
+### Problem 5.3
+```{r}
+library(mosaic)
+library(mosaicData)
+
+ggplot(data = CPS85, 
+       aes(x = exper, y = wage)) + 
+       geom_point()  + 
+       aes(colour = married) + 
+       scale_x_log10() + 
+       scale_y_log10() + 
+       facet_wrap(~sector, ncol = 4) + 
+       theme(legend.position = "right") + 
+       labs(title = "")
+```
+
+## Chapter 6 Exercises
+
+### Problem 6.1
+1. What are the labels/identifiers for the facets?
+  + The lables for the facets are the amount of a substance in different condition.
+
+2. Are the frames the same in each facet?
+  + The frames are not same in each facet.
+
+3. There are three different glyphs shown in the frames. Describe each type in terms of its graphical properties.
+  + Location: x-axis: suspension growth, y-axis: adhesion growth.
+  + Facet: Different condition
+  + Size: Different amount of substance
+
+### Problem 6.2
+1. List all of the guides in the graph. For each one, say which variable is being mapped to which graphical attribute.
+  + The log enzyme concentration is mapped from -3 to 5 on y-axis.
+  + gene varabile is mapped on the x-axis, and it has 18 kinds of gene.
+  + flux variable is mapped to indicate flux equals to zero or great than.Hallowed is zero, filled is greater than 0.
+  + target is mapped at top of the graph to indictae each gene's target.
+  + molecule varables is mapped in different kinds of dot glyphs.
+  
+2. The basic glyph is a dot. Say what are the graphical attributes of the dot (e.g. color, size, …). For each graphical attribute found in the graph, say which variable is mapped to that attribute.
+  + Color: different molecule kinds.
+  + Fill: flux variable
+  + Location: x-axis: gene, y-axis: Log enyzme concentration.
+
+3. Which two variables set the frame?
+  +  Log enzyme concentration and molecule
+
+4. The scaling of the horizontal variable (e.g. the translation of position to variable levels) is set by a combination of two variables. Which two?
+  + Target and gene
+  
+### Probelm 6.3
+1. For each of the two glyphs, list the set of graphical attributes both geometrically (e.g. “dot”) and in terms of the variable from the table that is mapped to that attribute (e.g., polarity).
+  + graphical attributes:bar, variable: center, low, protein.
+  + graphical attributes: stars: variable: polarity
+
+2. Which variables define the frame? Give variables for both the horizontal and vertical coordinates.
+  + horizontal: protein, vertical: cell density.
+
+3. Is color an attribute of the  glyph?
+  + No is is not an attribute of the glyph
+
+4. What guides (if any) are displayed?
+  + the guides are log2 ratio low vs high cell density.
+  
+### Problem 6.4
+1. Considering only that part of the graphic below the blue underlined bus and other modes of transportation, what is the frame?
+  + The frame is the modes of transportation.
+
+2. Describe the different types of glyphs used.
+  + Location: Time of transportation, modes of transportation
+  + Color: different types of transportation
+  
+3. For each different type of glyph
+  + What information is encoded in the shape/style of the glyphs?
+    + The shape/style is encoded how long it will take for each transportation.
+  + What information is encoded in the position of the glyph?
+    + Time schdule is mapped at horizontal position, time consumption is mapped at vertical position.
+
+4. What guides are there?
+  + The guides are time of transporatation and time consumption of each way.
+
+### Problem 6.5
+1. In the figure, what variables define the frame?
+  + b. State and Polling Organization
+
+### Problem 6.6
+1. In the figure, what is the glyph and its graphical attributes?
+  + d. Glyph: Rectangle. Graphical attribute: color and text
+  
+### Problem 6.7
+1. In the figure, what sets the order of the categorical variable in the scale for the vertical variable?
+  + c. Roth poll probability for the Democratic candidate.
+
+### Problem 6.8 
+1. In the figure, which of these is a guide for the indicated graphical attribute? (Select all that apply.)
+  + a. Vertical scale: Name of state.
+  + c. Vertical scale: Name of polling organization.
+  + d. Vertical scale: color band.
+
+### Problem 6.9
+```{r}
+library(ggplot2)
+library(dcData)
+library(mosaic)
+library(esquisse)
+
+Small <-
+  NCHS %>%
+  sample_n(size=5000)
+
+ggplot(Small) +
+ aes(x = bmi, y = weight, colour = smoker) +
+ geom_point(size = 1L) +
+ scale_color_hue() +
+ theme_minimal()
+      
+```
+1. write down the mapping between variables and graphical attributes. Note that the plot will vary slightly each time you refresh Small to draw a random sample from NCHS.
+  + location: x-axis: bmi, y-axis: weight
+  + color: Smoker
+
+### Problem 6.10
+a. What kind of layer is in the frame?
+  + The outer layer indicates the color of the graph, the inner layer indicates the frame of the graph.
+b. What are the scales that define the meaning of space in each frame?
+  + The scales that define the meaning of space is different kinds of the variables.

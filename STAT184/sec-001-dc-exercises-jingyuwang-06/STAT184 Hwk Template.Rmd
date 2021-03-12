@@ -1,0 +1,34 @@
+---
+title: "STAT 184 Homework Exercises" 
+subtitle: "DataComputing Chapters "
+author: "Jingyu Wang"
+output: html_notebook
+---
+
+## Assigned Exercises
+
+- DC Chapter 11 Exercises: 11.2, 11.3，11.5，11.6
+
+
+## Front Matter
+
+```{r}
+# clean up workspace environment
+rm(list = ls())
+
+# all packages used for the assignment
+library(mosaic)
+library(tidyverse)
+
+```
+
+
+
+## Chapter 11 Exercises
+
+### Problem 11.2
+
+
+### Problem 11.3
+
+

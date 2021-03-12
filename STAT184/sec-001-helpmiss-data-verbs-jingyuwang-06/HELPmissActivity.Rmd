@@ -1,0 +1,154 @@
+---
+title: "HELPmiss (Data Verbs) Activity"
+author: "Jingyu Wang"
+date: "02/22/2021"
+output: html_notebook
+---
+
+
+## Set Up:
+
+```{r}
+rm(list = ls())     # clean up your R environment
+
+# load packages
+library(tidyverse)  # includes lots of data verbs like `group_by()` and `summarise()`
+library(mosaicData) # includes the `HELPmiss` data set 
+
+
+# Load the `HELPmiss` data set into our RStudio environment
+data("HELPmiss")
+
+```
+
+
+## Task 1: Data Description
+
+*Write several sentences (or a bullet list) describing the HELP Study and the resulting `HELPmiss` data.  Your description should investigate basic data provenance (e.g., Who, What, When, Where, Why, How), explain the setting for the data, specify what each case represents in the data, and remark on inclusion/exclusion criteria.* 
+
+  + As I view the HELPmiss dataset, I found this dataset contains 470 cases and 28 columns.And I found this dataset is about health evaluation and linkage to primary care,the data has different variables to see the relationship between different factors and health situation, including drug uses, homeless or not, and sex, investigators use this dataset to see if they need primary care or not.And also to see their situation before the detox program and after the program.
+
+
+## Task 2: Basic Summaries 
+
+*Produce one or more R expressions involving `summarize()` and `HELPmiss` to address each of the following prompts.*
+
+1. *number of cases in `HELPmiss` study*
+```{r}
+nrow(HELPmiss)
+
+```
+
+
+2. *combined total number of times in the past 6 months all the people in `HELPmiss` entered a detox program (measured at baseline)* 
+
+
+```{r}
+summarise(HELPmiss, e2b=sum(e2b, na.rm = TRUE))
+
+```
+
+
+3. *mean time (in days) to first use of any substance post-detox for all the people in `HELPmiss`*
+
+
+```{r}
+summarise(HELPmiss, mean_time = mean(daysanysub, na.rm = TRUE))
+
+```
+
+
+
+
+## Task 3: Group Summaries  
+
+*Repeat task 2 above, but add code chunks to calculate result group-by-group according to each prompt.  Be sure to show all R code and write a sentence or two about what you observe in the results.* 
+
+
+1. *males versus females*
+
+```{r}
+SEX1 <- HELPmiss %>%
+  group_by(sex)%>%
+  summarise(count=n(),
+            e2b = sum(e2b, na.rm = TRUE),
+            mean = mean(daysanysub, na.rm = TRUE))
+SEX1
+```
+I found that more male enter the detox program, and the number of male is much higher than female.But female has higher mean number of using substance post-detox.
+
+2. *homeless or not*
+```{r}
+HOMELESS1 <- HELPmiss%>%
+  group_by(homeless)%>%
+  summarise(count = n(),
+            e2b = sum(e2b, na.rm = TRUE),
+            mean = mean(daysanysub, na.rm = TRUE))
+HOMELESS1
+```
+I found that more homeless enter the detox program, but housed has higher mean number of using substance post-detox.
+
+3. *substance*
+```{r}
+SUBSTANCE1 <- HELPmiss%>%
+  group_by(substance)%>%
+  summarise(count = n(),
+            e2b = sum(e2b, na.rm = TRUE),
+            mean = mean(daysanysub, na.rm = TRUE))
+SUBSTANCE1
+
+```
+I found that the usage of alcohol is the highest, but the cocaine has the highest mean number of post-detox use.
+
+4. *break down the homeless versus housed further, by sex*
+```{r}
+SEX2 <- HELPmiss%>%
+  group_by(homeless, sex)%>%
+  summarise(count = n(),
+            e2b = sum(e2b, na.rm = TRUE),
+            mean = mean(daysanysub, na.rm = TRUE))
+SEX2
+```
+I found whether housed or not, the female has higher mean number of use substance post-detox.
+
+5. *break down the homeless versus housed further, by substance*
+```{r}
+HOUSE2 <- HELPmiss%>%
+  group_by(homeless, substance)%>%
+  summarise(count = n(),
+            e2b = sum(e2b, na.rm = TRUE),
+            mean = mean(daysanysub, na.rm = TRUE))
+HOUSE2
+```
+I found that homeless using alcohol has the highest number of enter the detox program, and the housed using alcohol has the highest mean number of using alcohol post-detox.
+
+
+## Task 4: Data Visualization & Observations
+
+*Include one or more interesting plots of the data involving at least 3 variables per plot. Write a few sentences to explain the story that your plot tells about these data.  You can expand on the relationships that you studied in Task 2, or you can explore a different group of variables in `HELPmiss` that show something interesting.*  
+```{r}
+data("HELPmiss")
+
+ggplot(HELPmiss) +
+ aes(x = substance, y = age, colour = sex) +
+ geom_boxplot(fill = "#0c4c8a") +
+ scale_color_hue() +
+ theme_bw() +
+ facet_wrap(vars(substance))
+
+
+```
+I use age, substance, and sex these three variables to make my graph, I found that regardless of men and women, the age of each drug is very average. For example, alcohol is between 30 and 45 years old, cocaine is between 30 and 40 years old, and heroin is between 28 and 40 years old.I also found that the usage of alcohol is the most, then is heroin, last is cocaine.For the usage of substance, male is often higher than female.
+
+```{r}
+data("HELPmiss")
+ggplot(HELPmiss) +
+ aes(x = homeless, fill = substance) +
+ geom_bar() +
+ scale_fill_hue() +
+ theme_bw() +
+ facet_wrap(vars(substance))
+```
+In this graph I use three variables, count, substance, and homeless. I want to see the relationship between substance and homeless situation. I found that homeless tends to consume more alcohol, and housed contains to consume more cocaine, and heroin.
+
+

@@ -1,0 +1,35 @@
+---
+title: "R Markdown Activity"
+author: "Jingyu Wang"
+date: "February 8,2021"
+output: html_notebook
+---
+
+# Class Schedule
+
+### STAT 184: Introduction to R Programmaing
+Stat 184 is a required course for me, but I also know that R is a very useful language.I learned that R is an excellent tool for statistical calculations and statistical graphics.This week we learned about R Markdown, and I could find useful information about R Markdown in (https://rmarkdown.rstudio.com).I hope that in the future and in this class, I can learn more knowledge, use R to improve myself, and solve more problems in my study and life.
+
+![](https://images.unsplash.com/photo-1584291527908-033f4d6542c8?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=625&q=80)
+
+statistic image(source: Unsplash)
+
+
+### MATH 230
+This semester I also took math 230, this course is about calculus and vector. Before I took it, I heard that it was a very difficult class. I heard from previous classmates that the final exam of this class was very difficult, and their average score was only 50. So I also searched for previous exams on the university’s official website(https://math.psu.edu/undergraduate/courses/math230), I find some sample exams,hope that will help me to study.But so far I think I haven’t encountered a particularly big problem.
+
+![](https://images.unsplash.com/photo-1596495577886-d920f1fb7238?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=754&q=80)
+
+Calculus image(source: Unsplash)
+
+# Hobbies
+
+### Playing Piano
+
+Since I was five years old, my mother sent me to learn piano. At that time, I needed to practice piano for two hours every day. When I was young, I didn't like playing the piano because I found it very boring, and the piano teacher and my mother had very strict requirements on me. But as I grew up, I started to like playing the piano. Whenever I play the piano, I feel very relaxed and comfortable. Although I don’t practice piano every day, I will play the piano when I have free time and feel tired and bored. It’s very pleasant to listen to the music I play. My favorite piano music is:Mozart: Rondo in D major,K.485.(https://www.youtube.com/watch?v=gVvpgiGySEo).
+
+![](https://images.unsplash.com/photo-1514119412350-e174d90d280e?ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&ixlib=rb-1.2.1&auto=format&fit=crop&w=750&q=80)
+
+Piano image(source: Unsplash)
+
+

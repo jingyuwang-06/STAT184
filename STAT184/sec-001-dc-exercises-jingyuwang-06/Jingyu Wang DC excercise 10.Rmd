@@ -1,0 +1,172 @@
+
+---
+title: "STAT 184 Homework Exercises" 
+subtitle: "DataComputing Chapters 10 "
+author: "Jingyu Wang"
+output: html_notebook
+---
+
+## Assigned Exercises
+
+- DC Chapter 10 Exercises: 10.1, 10.2, 10.3, 10.4, 10.5, 10.6, 10.7  
+
+## Front Matter
+
+```{r}
+# clean up workspace environment
+rm(list = ls())
+
+# all packages used for the assignment
+library(mosaic)
+library(tidyverse)
+library(dcData)
+library(ggplot2)
+```
+
+
+
+## Chapter 10 Exercises
+
+### Problem 10.1
+1. str()
+  + summary function
+2. group_by()
+  + data verbs
+3. rank()
+  + tranformation function
+4. mean()
+  + reduction function
+5. filter()
+  + data verbs
+6. summary()
+  + summary function
+7. summarise()
+  + data verbs
+8. glimpse()
+  + summary function
+
+### Problem 10.2
+
+1. Add a new column that is the ratio between two variables.
+  + Using the mutate() data verb.
+2. Sort the cases in descending order of a variable.
+  + Using arrange() data verb.
+3. Create a new data table that includes only those cases that meet a criterion.
+  + Using the filter() data verb.
+4. From a data table with three categorical variables A, B, & C, and a quantitative variable X, produce an output that has the same cases but only the variables A and X.
+  + Using the select() to produce the output.
+5. From a data table with three categorical variables A, B, & C, and a quantitative variable X, produce an output that has a separate case for each of the combinations of the levels of A and B. (Hints: This requires two different data verbs. It might be easier to see the answer if the problem statement added, “and gives the maximum value of X over all the cases that have a given combination of A and B.”)
+  + Using the group_by() and summarise() data verbs to produce an output.
+
+### Problem 10.3
+1. Count the number of cases in a data table.
+  + Using the nrow() to count the number of cases in a data table.
+  
+2. List the names of the variables in a data table.
+  + Using the ls() function.
+  
+3. For data tables in an R package, display the documentation (“codebook”) for the data table.
+Load a package into your R session.
+  + We using the library("codebook") function to laod a package into the R session.
+
+4. Mark a data table as grouped by one or more categorical variables.
+  + We using group_by() to mark a data table as grouped by one or more categorical variables.
+  
+### Problem 10.4
+1. Output Table A
+```{r}
+data("BabyNames", package = 'dcData')
+BabyNames %>% 
+  arrange(count)
+```
+
+
+2. Output Table B
+```{r}
+BabyNames %>% 
+  filter(sex == "F")
+```
+
+3. Output Table C
+```{r}
+BabyNames %>% 
+  filter(sex == "M")
+```
+
+4. Output Table D
+```{r}
+Minneapolis2013 %>%
+  summarise( total = n() )
+```
+
+5. Output Table E
+```{r}
+BabyNames %>%
+  group_by( name,count ) %>% 
+  arrange(count)
+```
+
+### Problem 10.5
+1. How many people chose the same candidate for both First and Second place?
+```{r}
+data("Minneapolis", package = 'dcData')
+Minneapolis2013 %>%
+  filter(First == Second, First != Third) %>%
+  summarise(total= n())
+```
+  + I try to found the First and Second contain the same result, so I use the filter and summarise function to see how many of them are same. There are 304 chose the same candidate for bothe first and second place.
+
+
+2. Of the ballots where the First and Second place choices are the same, what were the top 3 choices?
+```{r}
+Minneapolis2013 %>%
+  group_by(First, Second) %>%
+  filter(First == Second, First != Third) %>%
+  summarise(total= n()) %>%
+  arrange(desc(total)) %>%
+  head(10)
+```
+  + We ask to fund the top 3 thir choice are the same, so I choose group_by and filter function to set the condition. Also using the arrange to see which of them are the top 3. The top 3 are Betsy Hodges, Mark andrew, and Don Samuels.
+
+3. Of the people who selected Ole Savior for First, what were the top three Second choices?
+```{r}
+Minneapolis2013 %>%
+  filter(First == "OLE SAVIOR") %>%
+  group_by(First, Second) %>%
+  summarise(total = n()) %>%
+  arrange(desc(total)) %>%
+  head(10)
+```
+  + We are ask to find people select Ole Savior first, then what were the top three second choices. So I set First equal to Ole Savior, then using the arrange descending function to see who are the top 3. The top 3 are Cam Winton, Christopher Robin Zimmerman, and Ole Savior.
+  
+### Problem 10.6
+1. Which color diamonds seem to be largest on average (in terms of carats)?
+```{r}
+data("diamonds", package = "dcData")
+diamonds %>% 
+  group_by(color) %>%
+  mutate(mean = sum(mean(table/carat))) %>% 
+  arrange(desc(mean)) %>%
+  head( 1 )
+```
+  + The color E seem to be largest on average.
+
+2. Which clarity of diamonds has the largest average “table” per carat?
+```{r}
+diamonds %>% 
+  group_by(clarity) %>%
+  mutate(mean = sum(mean(table/carat))) %>% 
+  arrange(desc(mean)) %>%
+  head( 1 )
+```
+  + The clarity VVS1 seems to has the largest average per carat.
+
+### Problem 10.7
+```{r}
+Minneapolis2013 %>%
+  group_by(First) %>%
+  summarise(total = n()) %>%
+  mutate(minor = (total < 5000)) %>%
+  arrange(desc(total))
+```
+

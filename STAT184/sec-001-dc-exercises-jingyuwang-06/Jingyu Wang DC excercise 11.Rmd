@@ -1,0 +1,143 @@
+---
+title: "STAT 184 Homework Exercises" 
+subtitle: "DataComputing Chapters "
+author: "Jingyu Wang"
+output: html_notebook
+---
+
+## Assigned Exercises
+
+- DC Chapter 11 Exercises: 11.2, 11.3，11.5，11.6
+
+
+## Front Matter
+
+```{r}
+# clean up workspace environment
+rm(list = ls())
+
+# all packages used for the assignment
+library(mosaic)
+library(tidyverse)
+library(dcData)
+library(esquisse)
+
+```
+
+
+
+## Chapter 11 Exercises
+
+### Problem 11.2
+  + The reason that the information in the two tables cannot be successfully combined laying the two tables side by side into a single table is because the number of rows in each table does not match, when we try join, the combining would be mess, the lag and lat attitude will not match each row.
+
+
+### Problem 11.3
+1. Make a bar chart showing, for each state, the count of the population that is under 5 years old, between 5 and 18 years old, between 18 and 65 years old, and over 65.
+```{r}
+ZipGeography1 <-
+  ZipGeography %>%
+  select(State,ZIP)
+
+ZipDemography1 <-
+  ZipDemography %>%
+  select(Totalpopulation, Under5years, X18yearsandover, X65yearsandover, ZIP)
+
+Zipdemo <-
+  ZipGeography1 %>%
+  inner_join(ZipDemography1, by = "ZIP") %>%
+  group_by(State) %>%
+  summarise(Totalpopulation = sum(Totalpopulation, na.rm = TRUE),
+            Under5years = sum(Under5years, na.rm = TRUE), 
+            X18yearsandover = sum(X18yearsandover, na.rm = TRUE),
+            X65yearsandover = sum(X65yearsandover, na.rm = TRUE)) %>%
+  mutate(Y5to18 = Totalpopulation - (X18yearsandover + Under5years)) %>%
+  mutate(Y18to65 = X18yearsandover - X65yearsandover) %>%
+  mutate(over65 = Totalpopulation - (Y5to18 + Y18to65 + Under5years))
+
+Zipdemo
+
+
+```
+
+### Problem 11.5
+1. How many different counties are there?
+  + There are 3218 different counties are there.
+```{r}
+Zipcounty <-
+  ZipGeography %>%
+  group_by(State, County) %>%
+  summarise(total = sum(Population))
+Zipcounty
+n_distinct(Zipcounty)
+```
+
+2. Which city names are used in the most states?
+  + Arlington
+```{r}
+CityNames <-
+  ZipGeography %>%
+  group_by(CityName, State) %>%
+  summarise(total = sum(Population)) %>%
+  arrange(CityName)
+
+CityNames
+```
+
+3. Identify cities that include more than 5% of their state population; which of those city names are used in the most states?
+```{r}
+ZipGeography2 <-
+  ZipGeography %>%
+  select(Population, State, ZIP)
+
+ZipDemography2 <-
+  ZipDemography %>%
+  select(Totalpopulation, ZIP)
+
+Zipdemopop <-
+  ZipGeography2 %>%
+  inner_join(ZipDemography2, by = "ZIP") %>%
+  group_by(State) %>%
+  summarise(total = sum(Totalpopulation, na.rm = TRUE)) %>%
+  mutate(Density = total/ Totalpopulation) %>%
+  filter(Density > 0.05)
+
+```
+
+4. Does any state have more than one time zone?
+  + + Yes for example, Florida and Tenesse.
+```{r}
+ZipGeography %>%
+  group_by(State, Timezone) %>%
+  summarise(total = sum(Population))
+
+
+```
+
+5. Does any city have more than one time zone?
+  + Yes, for example Acton.
+```{r}
+ZipGeography %>%
+  group_by(CityName, Timezone) %>%
+  summarise(total = sum(Population))  
+```
+6. Does any county have more than one time zone?
+  + Yes Franklin
+```{r}
+ZipGeography %>%
+  group_by(County, Timezone) %>%
+  summarise(total = sum(Population))  
+```
+
+### Problem 11.6
+1. How will you create a data table from MigrationFlows that renames origincode, destcode, and Y2000 to countryB, countryA and toAfromB?
+  + I will create a table that combies the MigrationFlows table and HealthIndicators table, I woould use innerjoin function to create the new table. Set the 
+  
+2. While toAfromB comes directly from MigrationFlows, the reverse flow, toBfromA, needs to be brought in via a join. What pairs of variables are being matched for the join?
+  + The paris of variables are being matched for the join is destcode from HealthIndicators to country from MigrationFlows.
+
+3. Both infantA and infantB come from HealthIndicators. What variables are being matched for infantA?
+  + It is a new variable need to use mutate function, using Y2000 and infant variable to create this one.
+
+4. What variables are being matched for InfantB?
+  + The infant variable.

@@ -1,0 +1,239 @@
+---
+title: "STAT 184 Homework Exercises" 
+subtitle: "DataComputing Chapters 7 "
+author: "Jingyu Wang"
+output: html_notebook
+---
+
+## Assigned Exercises
+
+- DC Chapter 7 Exercises: 7.1, 7.3, 7.5, 7.6, 7.7, 7.8
+
+## Front Matter
+
+```{r}
+# clean up workspace environment
+rm(list = ls())
+
+# all packages used for the assignment
+library(mosaic)
+library(tidyverse)
+library(dcData)
+library(esquisse)
+library(ggplot2)
+library(ggrepel)
+library(scales)
+```
+
+
+
+## Chapter 7 Exercises
+
+### Problem 7.1
+1. Determine the 3rd largest.
+  + Neither
+2. Determine the 3rd and 4th largest values.
+  + Neither
+3. Determine the number of cases.
+  + Reduction Function
+4. Determine whether a year is a leap year.
+  + Transformation Function
+5. Determine whether a date is a legal holiday.
+  + Transformation Function
+6. Determine the range of a set, that is, the max minus the min.
+  + Reduction Function
+7. Determine which day of the week (e.g., Sun, Mon, …) a given date is.
+  + Transformation Function
+8. Find the time interval in days spanned by a set of dates.
+  + Reduction Function
+  
+
+### Problem 7.3
+```{r}
+data("Minneapolis2013", package = "dcData")
+VoteResults <- 
+  Minneapolis2013 %>%
+  group_by(Second) %>% 
+  summarise( votes = n() )
+VoteResults
+VoteResults %>%
+  ggplot(aes(x = reorder(Second, desc(votes)), y = votes )) +
+       geom_bar(stat = 'identity') +
+       theme(axis.text.x = element_text(angle = 60, hjust = 1)) +
+       ylab("Votes") +
+       xlab("Candidate")
+
+```
+1. How many cases are there?
+  + There are 80101 cases in Minneapolis2013 data.
+  
+```{r}
+VoteResults %>% 
+  arrange( desc(votes) ) %>%
+  head()   
+```
+2. Who were the top 5 candidates in the Second vote selections.
+  + Betsy Hodges, Don Samuels, Mark Andrew, Jackie Cheeryhomes,and Bob Fine.
+  
+
+3. How many ballots are marked “undervote” in
+  + First choice selections?
+    + 1 undervote
+  + Second choice selections?
+    + 1 undervote
+  + Third choice selections?
+    + 1 undervote
+
+```{r}
+Minneapolis2013 %>% 
+  group_by(Third) %>%
+  summarise(count = n())
+```
+
+
+4. What are the top 3 combinations of First and Second vote selections? (That is, of all the possible ways a voter might have marked his or her first and second choices, which received the highest number of votes?)
+  + The top 3 combinations of First and Second vote selections are: 1. Betsy Hodges and Mark Andrew, 2.Betsy Hodges and Don Samuels, 3. Mark Andrew and Betsy Hodges.
+```{r}
+Combination <-
+  Minneapolis2013 %>%
+  group_by(First, Second) %>% 
+  summarise( votes = n() )
+Combination %>% 
+  arrange( desc(votes) ) %>%
+  head()   
+```
+
+
+5. Which Precinct had the highest number of ballots cast?
+  + P-06 had the highest number of ballots cast.
+```{r}
+Precinct <-
+  Minneapolis2013 %>%
+  group_by(Precinct) %>% 
+  summarise( votes = n() )
+Precinct %>% 
+  arrange( desc(votes) ) %>%
+  head()   
+```
+
+### Problem 7.5
+a. How has the result VoterData_A apparently been modified when compared to the original Minneapolis2013 data? What does a case represent in VoterData_A?
+  + The result VoterData_A is same as the original Minneapolis2013 data.
+```{r}
+VoterData_A <-
+  Minneapolis2013 %>%
+  group_by(First, Second)
+VoterData_A
+```
+
+b. How has the result VoterData_B apparently been modified when compared to the original Minneapolis2013 data? What does a case represent in VoterData_B?
+  + The result VoterData_B apparently been modified when compared to the original Minneapolis2013 data is the result VoterData_B only contains 1 row, which is the number of total cases of Minneapolis2013. The case represent in VoterData_B is the total row number of the whole data.
+```{r}
+VoterData_B <-
+  Minneapolis2013 %>%
+  summarise( total = n() )
+VoterData_B
+```
+
+c. How has the result VoterData_C apparently been modified when compared to the original Minneapolis2013 data? What does a case represent in VoterData_C?
+  + The result VoterData_C apparently been modified when compared to the original Minneapolis2013 is the VoterData_C table does not contain other columns, only contains three columns: First, Second, and total.The case represent in VoterData_C is the total votes in First and Second Vote selections.
+```{r}
+VoterData_C <-
+  Minneapolis2013 %>%
+  group_by(First, Second) %>%
+  summarise( total = n() )
+VoterData_C
+```
+
+d. Here, the group_by() and summarise() steps are reversed and now the result is an error indicating that “Column First is unknown.” Clearly the variable First existed in the Minneapolis2013 data frame, why is it now unknown?
+  + This is because we use the summarise function first, and use group_by function next, the group_by() should always along with summarise().
+```{r}
+VoterData_D <-
+  Minneapolis2013 %>%
+  summarise( total = n() ) %>%
+  group_by(First, Second) 
+```
+
+### Problem 7.6
+
+1.Make a scatter plot showing the relationship between land area and population for each state.
+
+```{r}
+data("ZipGeography", package = "dcData")
+head(ZipGeography)
+
+ZipGeography[["Population"]][is.na(ZipGeography[["Population"]])] <- 0
+ZipGeography[["LandArea"]][is.na(ZipGeography[["LandArea"]])] <- 0
+
+ZipGeography_State <- 
+  ZipGeography %>%
+  group_by(State) %>%
+  summarise(Population = sum(Population), LandArea = sum(LandArea))
+
+head(ZipGeography_State)
+
+ggplot(ZipGeography_State) +
+ aes(x = Population, y = LandArea, colour = State) +
+ geom_point(size = 1L) +
+ scale_color_hue() +
+ theme_minimal()
+```
+
+2. Make a choropleth map showing the population of each state.
+```{r}
+ZipGeography %>%
+  group_by(State) %>%
+  summarise(area = sum(LandArea,
+                       na.rm = TRUE),
+            population = sum(Population,
+                             na.rm = TRUE))
+ZipGeography %>%
+  group_by(State) %>%
+  summarise(area = sum(LandArea,
+                       na.rm = TRUE),
+            population = sum(Population,
+                             na.rm = TRUE)) %>%
+  mUSMap(key = "State", fill = "population")
+```
+3. Make a choropleth map showing the population per unit area of each state.
+```{r}
+ZipGeography %>%
+  group_by(State) %>%
+  summarise(area = sum(LandArea, na.rm = TRUE),
+            population = sum(Population,na.rm = TRUE),
+            Density = (population / area),
+            Density = pmin(Density, 500))
+ZipGeography %>%
+  group_by(State) %>%
+  summarise(area = sum(LandArea,na.rm = TRUE),
+            population = sum(Population,na.rm = TRUE),
+            Density = (population / area),
+            Density = pmin(Density, 500))
+  mUSMap(ZipGeography, key = "State", fill = "Density")
+
+```
+
+### Problem 7.7
+a. sex
+  + variables: sex, meanAge, count
+b. diagnosis
+  + variables: diagnosis, meanAge, count
+c. sex, diagnosis
+  + variables: sex, diagnosis, meanAge, count
+d. age, diagnosis
+  + variables: age, diagnosis, meanAge, count
+e. age
+  + variables: age, count, meanAge
+  
+#### Problem 7.8
+1. Make a scatter plot showing the relationship, if any, between the number of Foreignborn people in a zip code and the number who SpeakalanguageotherthanEnglishathome5yearsandover. (Please note that such long variable names ought to be avoided as a matter of good style.)
+```{r}
+data("ZipDemography", package = "dcData")
+ggplot(ZipDemography) +
+ aes(x = Foreignborn, y = SpeakalanguageotherthanEnglishathome5yearsandover) +
+ geom_point(size = 1L, colour = "#0c4c8a") +
+ theme_minimal()
+
+```
+2. Explain what would keep you, at this point, from calculating the fraction of people in each state who have a Bachelorsdegreeorhigher. Say how you would go about constructing such a plot — but don’t actually do it! Too much work.
+  + I would use the Totalpopulation, and Bachelorsdegreeorhigher, and make the state as group to construct the plot, to show the relationship between Bachelorsdegreeorhigher and state.
